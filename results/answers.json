@@ -1,0 +1,290 @@
+[
+  {
+    "qid": "Q01",
+    "query": "Are password hints allowed?",
+    "outcome": "RE-RANK RESCUE",
+    "same_chunk_set": false,
+    "answer1": "The provided context does not answer this question.",
+    "answer2": "Memorized secret verifiers SHALL NOT permit the subscriber to store a “hint” that is accessible to an unauthenticated claimant [C046].",
+    "answer1_has_key_fact": false,
+    "answer2_has_key_fact": true,
+    "llm_latency1_s": 1.273427905999597,
+    "llm_latency2_s": 1.2790960610000184,
+    "model_version": "gemini-3.1-flash-lite",
+    "from_cache": [
+      false,
+      false
+    ],
+    "errors": []
+  },
+  {
+    "qid": "Q02",
+    "query": "How often should users be forced to change their passwords?",
+    "outcome": "RE-RANK RESCUE",
+    "same_chunk_set": false,
+    "answer1": "The provided context does not answer this question.",
+    "answer2": "Users SHOULD NOT be required to change their memorized secrets arbitrarily (e.g., periodically) unless there is a user request or evidence of authenticator compromise [C198].",
+    "answer1_has_key_fact": false,
+    "answer2_has_key_fact": true,
+    "llm_latency1_s": 1.9382173280000643,
+    "llm_latency2_s": 1.489022900999771,
+    "model_version": "gemini-3.1-flash-lite",
+    "from_cache": [
+      false,
+      false
+    ],
+    "errors": []
+  },
+  {
+    "qid": "Q03",
+    "query": "What is the minimum password length?",
+    "outcome": "both miss (not in top 10)",
+    "same_chunk_set": false,
+    "answer1": "The provided context does not answer this question.",
+    "answer2": "The provided context does not answer this question.",
+    "answer1_has_key_fact": false,
+    "answer2_has_key_fact": false,
+    "llm_latency1_s": 1.6530711759996848,
+    "llm_latency2_s": 1.7472110879998581,
+    "model_version": "gemini-3.1-flash-lite",
+    "from_cache": [
+      false,
+      false
+    ],
+    "errors": []
+  },
+  {
+    "qid": "Q04",
+    "query": "Can SMS text messages be used to deliver one-time codes?",
+    "outcome": "RE-RANK RESCUE",
+    "same_chunk_set": false,
+    "answer1": "The provided context does not answer this question.",
+    "answer2": "Yes, SMS text messages can be used to deliver one-time codes as part of an out-of-band authentication method, provided the method authenticates to a public mobile telephone network using a SIM card or equivalent that uniquely identifies the device [C061]. This method SHALL only be used if a secret is being sent from the verifier to the out-of-band device via the PSTN (SMS or voice) [C061].",
+    "answer1_has_key_fact": false,
+    "answer2_has_key_fact": false,
+    "llm_latency1_s": 1.3872201760004828,
+    "llm_latency2_s": 1.4117621300001701,
+    "model_version": "gemini-3.1-flash-lite",
+    "from_cache": [
+      true,
+      true
+    ],
+    "errors": []
+  },
+  {
+    "qid": "Q05",
+    "query": "How long is an out-of-band authentication secret valid?",
+    "outcome": "RE-RANK RESCUE",
+    "same_chunk_set": false,
+    "answer1": "The provided context does not answer this question.",
+    "answer2": "The authentication SHALL be considered invalid if not completed within 10 minutes [C066]. Additionally, verifiers SHALL accept a given authentication secret only once during the validity period to provide replay resistance [C066].",
+    "answer1_has_key_fact": false,
+    "answer2_has_key_fact": true,
+    "llm_latency1_s": 1.226957308999772,
+    "llm_latency2_s": 1.4558398859999215,
+    "model_version": "gemini-3.1-flash-lite",
+    "from_cache": [
+      true,
+      true
+    ],
+    "errors": []
+  },
+  {
+    "qid": "Q06",
+    "query": "Is a 6-character memorized secret ever acceptable?",
+    "outcome": "both hit",
+    "same_chunk_set": false,
+    "answer1": "Yes, a 6-character memorized secret is acceptable if it is chosen randomly by the CSP or verifier [C043], [C046]. Such secrets SHALL be at least 6 characters in length and SHALL be generated using an approved random bit generator [C046]. Memorized secrets chosen by the subscriber, however, SHALL be at least 8 characters in length [C043].",
+    "answer2": "Yes, a 6-character memorized secret is acceptable if it is chosen randomly by the CSP or verifier [C043], [C046]. Such secrets SHALL be at least 6 characters in length and MAY be entirely numeric [C043]. Additionally, randomly generated PINs of 6 or more digits are considered adequate for memorized secrets [C252].",
+    "answer1_has_key_fact": true,
+    "answer2_has_key_fact": true,
+    "llm_latency1_s": 2.85992202000034,
+    "llm_latency2_s": 1.2469132189999073,
+    "model_version": "gemini-3.1-flash-lite",
+    "from_cache": [
+      true,
+      false
+    ],
+    "errors": []
+  },
+  {
+    "qid": "Q07",
+    "query": "How many failed fingerprint attempts are allowed before biometric authentication is disabled?",
+    "outcome": "both hit",
+    "same_chunk_set": false,
+    "answer1": "The biometric system SHALL allow no more than 5 consecutive failed authentication attempts, or 10 consecutive failed attempts if Presentation Attack Detection (PAD) is implemented [C107]. Once that limit is reached, the biometric authenticator SHALL either impose an exponentially increasing delay before the next attempt or disable the biometric user authentication and offer another factor [C107].",
+    "answer2": "The biometric system SHALL allow no more than 5 consecutive failed authentication attempts, or 10 consecutive failed attempts if Presentation Attack Detection (PAD) is implemented [C107]. Once that limit is reached, the biometric authenticator SHALL either impose an exponentially increasing delay before the next attempt or disable the biometric user authentication and offer another factor [C107].",
+    "answer1_has_key_fact": true,
+    "answer2_has_key_fact": true,
+    "llm_latency1_s": 1.880406987999777,
+    "llm_latency2_s": 1.6215256240002418,
+    "model_version": "gemini-3.1-flash-lite",
+    "from_cache": [
+      true,
+      true
+    ],
+    "errors": []
+  },
+  {
+    "qid": "Q08",
+    "query": "Which authenticators are permitted at AAL3?",
+    "outcome": "RE-RANK RESCUE",
+    "same_chunk_set": false,
+    "answer1": "At AAL3, authentication SHALL use a hardware-based authenticator and an authenticator that provides verifier impersonation resistance, though the same device MAY fulfill both requirements [C027]. Multi-factor authenticators used at AAL3 SHALL be hardware cryptographic modules validated at FIPS 140 Level 2 or higher overall with at least FIPS 140 Level 3 physical security [C030]. Single-factor cryptographic devices used at AAL3 SHALL be validated at FIPS 140 Level 1 or higher overall with at least FIPS 140 Level 3 physical security [C030].",
+    "answer2": "At AAL3, authentication SHALL occur by using one of the following combinations of authenticators: a Multi-Factor Cryptographic Device, a Single-Factor Cryptographic Device with a Memorized Secret, a Multi-Factor OTP device (software or hardware) with a Single-Factor Cryptographic Device, a Multi-Factor OTP Device (hardware only) with a Single-Factor Cryptographic Software, or a Single-Factor OTP Device (hardware only) with a Multi-Factor Cryptographic Software Authenticator [C028]. Additionally, AAL3 authentication SHALL use a hardware-based authenticator and an authenticator that provides verifier impersonation resistance, though the same device MAY fulfill both requirements [C027].",
+    "answer1_has_key_fact": false,
+    "answer2_has_key_fact": true,
+    "llm_latency1_s": 1.7658464300002379,
+    "llm_latency2_s": 1.344936931999655,
+    "model_version": "gemini-3.1-flash-lite",
+    "from_cache": [
+      true,
+      true
+    ],
+    "errors": []
+  },
+  {
+    "qid": "Q09",
+    "query": "Are hashed low-complexity passwords considered verifier-compromise resistant?",
+    "outcome": "both hit",
+    "same_chunk_set": true,
+    "answer1": "No, secrets with lower complexity, such as memorized secrets, SHALL NOT be considered verifier-compromise resistant when hashed because they are susceptible to dictionary lookup or exhaustive search attacks [C117].",
+    "answer2": "No, secrets with lower complexity, such as memorized secrets, SHALL NOT be considered verifier-compromise resistant when hashed because they are susceptible to dictionary lookup or exhaustive search attacks [C117].",
+    "answer1_has_key_fact": true,
+    "answer2_has_key_fact": true,
+    "llm_latency1_s": 1.3906274219998522,
+    "llm_latency2_s": 1.3906274219998522,
+    "model_version": "gemini-3.1-flash-lite",
+    "from_cache": [
+      true,
+      true
+    ],
+    "errors": []
+  },
+  {
+    "qid": "Q10",
+    "query": "Does unlocking my phone with a PIN count as an authentication factor?",
+    "outcome": "both hit",
+    "same_chunk_set": false,
+    "answer1": "No, the unlocking of a device such as a smartphone (typically done using a PIN or biometric) SHALL NOT be considered one of the authentication factors [C022]. It is generally not possible for a verifier to know that the device had been locked or if the unlock process met the requirements for the relevant authenticator type [C022].",
+    "answer2": "No, the unlocking of a device such as a smartphone (typically done using a PIN or biometric) SHALL NOT be considered one of the authentication factors [C022]. This is because it is generally not possible for a verifier to know that the device had been locked or if the unlock process met the requirements for the relevant authenticator type [C022, C023].",
+    "answer1_has_key_fact": true,
+    "answer2_has_key_fact": true,
+    "llm_latency1_s": 1.9679402840001785,
+    "llm_latency2_s": 2.216450758999599,
+    "model_version": "gemini-3.1-flash-lite",
+    "from_cache": [
+      true,
+      true
+    ],
+    "errors": []
+  },
+  {
+    "qid": "Q11",
+    "query": "Is email an acceptable out-of-band authentication method?",
+    "outcome": "both hit",
+    "same_chunk_set": false,
+    "answer1": "No, email is not an acceptable out-of-band authentication method. Methods that do not prove possession of a specific device, such as email, SHALL NOT be used for out-of-band authentication [C060], [C061].",
+    "answer2": "No, email is not an acceptable out-of-band authentication method. Methods that do not prove possession of a specific device, such as email or voice-over-IP (VOIP), SHALL NOT be used for out-of-band authentication [C060], [C061].",
+    "answer1_has_key_fact": true,
+    "answer2_has_key_fact": true,
+    "llm_latency1_s": 1.5612386020002305,
+    "llm_latency2_s": 1.2382751840004858,
+    "model_version": "gemini-3.1-flash-lite",
+    "from_cache": [
+      true,
+      true
+    ],
+    "errors": []
+  },
+  {
+    "qid": "Q12",
+    "query": "Can session cookies survive a browser restart?",
+    "outcome": "both hit",
+    "same_chunk_set": false,
+    "answer1": "Session secrets, which include session cookies, SHALL be non-persistent [C156]. Therefore, they SHALL NOT be retained across a restart of the associated application or a reboot of the host device [C156].",
+    "answer2": "No, session secrets, which include browser cookies used for session tracking, SHALL be non-persistent [C156]. They SHALL NOT be retained across a restart of the associated application or a reboot of the host device [C156].",
+    "answer1_has_key_fact": true,
+    "answer2_has_key_fact": true,
+    "llm_latency1_s": 1.644425830999353,
+    "llm_latency2_s": 1.8595840719999615,
+    "model_version": "gemini-3.1-flash-lite",
+    "from_cache": [
+      true,
+      true
+    ],
+    "errors": []
+  },
+  {
+    "qid": "Q13",
+    "query": "Can a password alone satisfy AAL2?",
+    "outcome": "RE-RANK LOSS",
+    "same_chunk_set": false,
+    "answer1": "No, a password alone cannot satisfy AAL2. At AAL2, authentication SHALL occur by the use of either a multi-factor authenticator or a combination of two single-factor authenticators [C018]. Furthermore, proof of possession and control of two distinct authentication factors is required at AAL2 [C017], [C005].",
+    "answer2": "No, a password alone cannot satisfy AAL2. AAL2 requires proof of possession and control of two distinct authentication factors through secure authentication protocol(s) [C005, C017].",
+    "answer1_has_key_fact": true,
+    "answer2_has_key_fact": true,
+    "llm_latency1_s": 2.6066507089999504,
+    "llm_latency2_s": 1.3669298389995674,
+    "model_version": "gemini-3.1-flash-lite",
+    "from_cache": [
+      true,
+      true
+    ],
+    "errors": []
+  },
+  {
+    "qid": "Q14",
+    "query": "After how many minutes of inactivity must an AAL3 session be reauthenticated?",
+    "outcome": "both hit",
+    "same_chunk_set": true,
+    "answer1": "At AAL3, reauthentication of the subscriber SHALL be repeated following any period of inactivity lasting 15 minutes or longer [C033].",
+    "answer2": "At AAL3, reauthentication of the subscriber SHALL be repeated following any period of inactivity lasting 15 minutes or longer [C033].",
+    "answer1_has_key_fact": true,
+    "answer2_has_key_fact": true,
+    "llm_latency1_s": 1.8175232329995197,
+    "llm_latency2_s": 1.0547929429994838,
+    "model_version": "gemini-3.1-flash-lite",
+    "from_cache": [
+      true,
+      true
+    ],
+    "errors": []
+  },
+  {
+    "qid": "Q15",
+    "query": "Can push notifications on a smartphone be used for out-of-band authentication?",
+    "outcome": "RE-RANK RESCUE",
+    "same_chunk_set": false,
+    "answer1": "The provided context does not answer this question.",
+    "answer2": "Yes, if out-of-band verification is to be made using a secure application, such as on a smartphone, the verifier MAY send a push notification to that device [C064]. The verifier then waits for the establishment of an authenticated protected channel and verifies the authenticator’s identifying key [C064].",
+    "answer1_has_key_fact": false,
+    "answer2_has_key_fact": true,
+    "llm_latency1_s": 1.163221163000344,
+    "llm_latency2_s": 1.464748747000158,
+    "model_version": "gemini-3.1-flash-lite",
+    "from_cache": [
+      true,
+      true
+    ],
+    "errors": []
+  },
+  {
+    "qid": "Q16",
+    "query": "What false match rate must a biometric system achieve?",
+    "outcome": "both hit",
+    "same_chunk_set": false,
+    "answer1": "The biometric system SHALL operate with an FMR of 1 in 1000 or better [C106]. This FMR SHALL be achieved under conditions of a conformant attack (i.e., zero-effort impostor attempt) as defined in ISO/IEC 30107-1 [C106].",
+    "answer2": "The biometric system SHALL operate with an FMR of 1 in 1000 or better [C106]. This FMR SHALL be achieved under conditions of a conformant attack (i.e., zero-effort impostor attempt) as defined in ISO/IEC 30107-1 [C106].",
+    "answer1_has_key_fact": true,
+    "answer2_has_key_fact": true,
+    "llm_latency1_s": 1.2847769520003567,
+    "llm_latency2_s": 1.555059261999304,
+    "model_version": "gemini-3.1-flash-lite",
+    "from_cache": [
+      true,
+      true
+    ],
+    "errors": []
+  }
+]

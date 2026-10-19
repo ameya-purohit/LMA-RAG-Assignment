@@ -1,0 +1,306 @@
+{
+ "214ce4f5877e2dd746f3fc36e6e87864ec67179bfd3ea8d76334f4ef493620e9": {
+  "text": "The provided context does not answer this question.",
+  "latency_s": 1.4960507750001852,
+  "model_version": "gemini-3.1-flash-lite",
+  "finish_reason": "STOP",
+  "attempts": 1,
+  "error": null
+ },
+ "1f6034e1302e15aeea335296e5e3ace680ca8c41cf62076311f8dd08a1042b8f": {
+  "text": "Verifiers SHALL NOT permit the subscriber to store a “hint” that is accessible to an unauthenticated claimant [C046].",
+  "latency_s": 3.2066244110001207,
+  "model_version": "gemini-3.1-flash-lite",
+  "finish_reason": "STOP",
+  "attempts": 1,
+  "error": null
+ },
+ "93c4dd1324996d6fb5989337bdb9eb11f304f06b81b40e6ac215bc3c6a077e1b": {
+  "text": "The provided context does not answer this question.",
+  "latency_s": 1.316824667000219,
+  "model_version": "gemini-3.1-flash-lite",
+  "finish_reason": "STOP",
+  "attempts": 1,
+  "error": null
+ },
+ "9fd475d9639207852daa500d35d15c5cdf73a8b6a3965d2270ee5fd1276cc1c5": {
+  "text": "Users SHOULD NOT be required to change their memorized secrets arbitrarily (e.g., periodically) unless there is a user request or evidence of authenticator compromise [C198].",
+  "latency_s": 1.6503431510000155,
+  "model_version": "gemini-3.1-flash-lite",
+  "finish_reason": "STOP",
+  "attempts": 1,
+  "error": null
+ },
+ "9ab8d2a723009847d955ff9227bc5df63ed4ea483569144f189dc8f6fc8d0677": {
+  "text": "The provided context does not answer this question.",
+  "latency_s": 1.4805617880001591,
+  "model_version": "gemini-3.1-flash-lite",
+  "finish_reason": "STOP",
+  "attempts": 1,
+  "error": null
+ },
+ "9aa08ad1655fbec308409516aa0d9fca3e186fa39085390e3c05134957da31a7": {
+  "text": "The provided context does not specify a single minimum password length, stating instead that the minimum password length that should be required depends to a large extent on the threat model being addressed [C244].",
+  "latency_s": 1.6046913479995055,
+  "model_version": "gemini-3.1-flash-lite",
+  "finish_reason": "STOP",
+  "attempts": 1,
+  "error": null
+ },
+ "280c770f6986597a6aa61248dd42144225db7ba49b876e3e933e518cadd1657e": {
+  "text": "The provided context does not answer this question.",
+  "latency_s": 1.3872201760004828,
+  "model_version": "gemini-3.1-flash-lite",
+  "finish_reason": "STOP",
+  "attempts": 1,
+  "error": null
+ },
+ "3b65646a67f968c8db2c6ca036f51cf649758784bd2cf06c2bcd17d55612a929": {
+  "text": "Yes, SMS text messages can be used to deliver one-time codes as part of an out-of-band authentication method, provided the method authenticates to a public mobile telephone network using a SIM card or equivalent that uniquely identifies the device [C061]. This method SHALL only be used if a secret is being sent from the verifier to the out-of-band device via the PSTN (SMS or voice) [C061].",
+  "latency_s": 1.4117621300001701,
+  "model_version": "gemini-3.1-flash-lite",
+  "finish_reason": "STOP",
+  "attempts": 1,
+  "error": null
+ },
+ "e58847b2899eee5407d7e8970809989829afc2de0134ab6a769a2a961269e2e7": {
+  "text": "The provided context does not answer this question.",
+  "latency_s": 1.226957308999772,
+  "model_version": "gemini-3.1-flash-lite",
+  "finish_reason": "STOP",
+  "attempts": 1,
+  "error": null
+ },
+ "f90e111a0b5536d7913cd70db72771befde6d6362116c30f9b9132d910aa97e4": {
+  "text": "The authentication SHALL be considered invalid if not completed within 10 minutes [C066]. Additionally, verifiers SHALL accept a given authentication secret only once during the validity period to provide replay resistance [C066].",
+  "latency_s": 1.4558398859999215,
+  "model_version": "gemini-3.1-flash-lite",
+  "finish_reason": "STOP",
+  "attempts": 1,
+  "error": null
+ },
+ "4d2fa0eee8fd13d2622f8262bcee52a254d4ee86473dac36f4f50705e5019805": {
+  "text": "Yes, a 6-character memorized secret is acceptable if it is chosen randomly by the CSP or verifier [C043], [C046]. Such secrets SHALL be at least 6 characters in length and SHALL be generated using an approved random bit generator [C046]. Memorized secrets chosen by the subscriber, however, SHALL be at least 8 characters in length [C043].",
+  "latency_s": 2.85992202000034,
+  "model_version": "gemini-3.1-flash-lite",
+  "finish_reason": "STOP",
+  "attempts": 1,
+  "error": null
+ },
+ "d8a3f7542256f4493108c57121682d9ef387e00c70da772542c9e84e64bb6d97": {
+  "text": "Yes, a 6-character memorized secret is acceptable if it is chosen randomly by the CSP or verifier [C043], [C046]. Such secrets MAY be entirely numeric [C043] and are considered adequate for memorized secrets [C250]. However, memorized secrets chosen by the subscriber SHALL be at least 8 characters in length [C043].",
+  "latency_s": 2.9883469309997963,
+  "model_version": "gemini-3.1-flash-lite",
+  "finish_reason": "STOP",
+  "attempts": 1,
+  "error": null
+ },
+ "037d2bc76a4d587c229d577c33287f933231d274eb9ec21b5ba9aff965cd39c1": {
+  "text": "The biometric system SHALL allow no more than 5 consecutive failed authentication attempts, or 10 consecutive failed attempts if Presentation Attack Detection (PAD) is implemented [C107]. Once that limit is reached, the biometric authenticator SHALL either impose an exponentially increasing delay before the next attempt or disable the biometric user authentication and offer another factor [C107].",
+  "latency_s": 1.880406987999777,
+  "model_version": "gemini-3.1-flash-lite",
+  "finish_reason": "STOP",
+  "attempts": 1,
+  "error": null
+ },
+ "4f7b657deaf587485ecdbcefa625bea496bdc78993b5503206ebaaacb6ec796d": {
+  "text": "The biometric system SHALL allow no more than 5 consecutive failed authentication attempts, or 10 consecutive failed attempts if Presentation Attack Detection (PAD) is implemented [C107]. Once that limit is reached, the biometric authenticator SHALL either impose an exponentially increasing delay before the next attempt or disable the biometric user authentication and offer another factor [C107].",
+  "latency_s": 1.6215256240002418,
+  "model_version": "gemini-3.1-flash-lite",
+  "finish_reason": "STOP",
+  "attempts": 1,
+  "error": null
+ },
+ "d7534aef7b59570bd15032171495263942f3d35e05fcb3fc37439475eb3b8efb": {
+  "text": "At AAL3, authentication SHALL use a hardware-based authenticator and an authenticator that provides verifier impersonation resistance, though the same device MAY fulfill both requirements [C027]. Multi-factor authenticators used at AAL3 SHALL be hardware cryptographic modules validated at FIPS 140 Level 2 or higher overall with at least FIPS 140 Level 3 physical security [C030]. Single-factor cryptographic devices used at AAL3 SHALL be validated at FIPS 140 Level 1 or higher overall with at least FIPS 140 Level 3 physical security [C030].",
+  "latency_s": 1.7658464300002379,
+  "model_version": "gemini-3.1-flash-lite",
+  "finish_reason": "STOP",
+  "attempts": 1,
+  "error": null
+ },
+ "a13b0634160cf93548e7de34b451b5c88a9414f2a2b8f49ccafb6fe0796bf149": {
+  "text": "At AAL3, authentication SHALL occur by using one of the following combinations of authenticators: a Multi-Factor Cryptographic Device, a Single-Factor Cryptographic Device with a Memorized Secret, a Multi-Factor OTP device (software or hardware) with a Single-Factor Cryptographic Device, a Multi-Factor OTP Device (hardware only) with a Single-Factor Cryptographic Software, or a Single-Factor OTP Device (hardware only) with a Multi-Factor Cryptographic Software Authenticator [C028]. Additionally, AAL3 authentication SHALL use a hardware-based authenticator and an authenticator that provides verifier impersonation resistance, though the same device MAY fulfill both requirements [C027].",
+  "latency_s": 1.344936931999655,
+  "model_version": "gemini-3.1-flash-lite",
+  "finish_reason": "STOP",
+  "attempts": 1,
+  "error": null
+ },
+ "bd304fd352e4cc19b8f7a3c2b6969977725c618a6548fbe3135c9b6a5858bac7": {
+  "text": "No, secrets with lower complexity, such as memorized secrets, SHALL NOT be considered verifier-compromise resistant when hashed because they are susceptible to dictionary lookup or exhaustive search attacks [C117].",
+  "latency_s": 1.3906274219998522,
+  "model_version": "gemini-3.1-flash-lite",
+  "finish_reason": "STOP",
+  "attempts": 1,
+  "error": null
+ },
+ "47397a157e2dce984a77fde91333d70071bed70071f7e1eee459e4c848de7150": {
+  "text": "No, the unlocking of a device such as a smartphone (typically done using a PIN or biometric) SHALL NOT be considered one of the authentication factors [C022]. It is generally not possible for a verifier to know that the device had been locked or if the unlock process met the requirements for the relevant authenticator type [C022].",
+  "latency_s": 1.9679402840001785,
+  "model_version": "gemini-3.1-flash-lite",
+  "finish_reason": "STOP",
+  "attempts": 1,
+  "error": null
+ },
+ "9821e8d984e56315aed703d9f04dcf991139424c07c4ffbd274b10e849f6fe96": {
+  "text": "No, the unlocking of a device such as a smartphone (typically done using a PIN or biometric) SHALL NOT be considered one of the authentication factors [C022]. This is because it is generally not possible for a verifier to know that the device had been locked or if the unlock process met the requirements for the relevant authenticator type [C022, C023].",
+  "latency_s": 2.216450758999599,
+  "model_version": "gemini-3.1-flash-lite",
+  "finish_reason": "STOP",
+  "attempts": 1,
+  "error": null
+ },
+ "958eac6e84669ef19de4b95b5d7013dc6f64797f11ff22b4d8b3d4034697c674": {
+  "text": "No, email is not an acceptable out-of-band authentication method. Methods that do not prove possession of a specific device, such as email, SHALL NOT be used for out-of-band authentication [C060], [C061].",
+  "latency_s": 1.5612386020002305,
+  "model_version": "gemini-3.1-flash-lite",
+  "finish_reason": "STOP",
+  "attempts": 1,
+  "error": null
+ },
+ "6b9dbd43556245235830de0152e578f8f93f33a1ed5ca28b661705056712e92f": {
+  "text": "No, email is not an acceptable out-of-band authentication method. Methods that do not prove possession of a specific device, such as email or voice-over-IP (VOIP), SHALL NOT be used for out-of-band authentication [C060], [C061].",
+  "latency_s": 1.2382751840004858,
+  "model_version": "gemini-3.1-flash-lite",
+  "finish_reason": "STOP",
+  "attempts": 5,
+  "error": null
+ },
+ "b311eaa051482e6d9f48b620e7d20724f76acd5f125514a25f2fd7322b5a1f06": {
+  "text": "Session secrets, which include session cookies, SHALL be non-persistent [C156]. Therefore, they SHALL NOT be retained across a restart of the associated application or a reboot of the host device [C156].",
+  "latency_s": 1.644425830999353,
+  "model_version": "gemini-3.1-flash-lite",
+  "finish_reason": "STOP",
+  "attempts": 1,
+  "error": null
+ },
+ "3b434c9b321cea79a69bce52cdfb2391f26d34fd31328768c28eb7cd2eef1011": {
+  "text": "No, session secrets, which include browser cookies used for session tracking, SHALL be non-persistent [C156]. They SHALL NOT be retained across a restart of the associated application or a reboot of the host device [C156].",
+  "latency_s": 1.8595840719999615,
+  "model_version": "gemini-3.1-flash-lite",
+  "finish_reason": "STOP",
+  "attempts": 1,
+  "error": null
+ },
+ "4356de2bb0a4e7ac1208620565649055975240e64832f42cfa90082c859c6e3a": {
+  "text": "No, a password alone cannot satisfy AAL2. At AAL2, authentication SHALL occur by the use of either a multi-factor authenticator or a combination of two single-factor authenticators [C018]. Furthermore, proof of possession and control of two distinct authentication factors is required at AAL2 [C017], [C005].",
+  "latency_s": 2.6066507089999504,
+  "model_version": "gemini-3.1-flash-lite",
+  "finish_reason": "STOP",
+  "attempts": 1,
+  "error": null
+ },
+ "158056aee6d65e4a21dbf4154e559f6029b447d61747cf8e1f6bcfb411f35cce": {
+  "text": "No, a password alone cannot satisfy AAL2. AAL2 requires proof of possession and control of two distinct authentication factors through secure authentication protocol(s) [C005, C017].",
+  "latency_s": 1.3669298389995674,
+  "model_version": "gemini-3.1-flash-lite",
+  "finish_reason": "STOP",
+  "attempts": 1,
+  "error": null
+ },
+ "1e96b5e3844ec8045a9ed2ebe7e8dea79f8117d66b48c12028d8a149d4e89f72": {
+  "text": "At AAL3, reauthentication of the subscriber SHALL be repeated following any period of inactivity lasting 15 minutes or longer [C033].",
+  "latency_s": 1.8175232329995197,
+  "model_version": "gemini-3.1-flash-lite",
+  "finish_reason": "STOP",
+  "attempts": 1,
+  "error": null
+ },
+ "5b8074b645ded00d91b92219d5c19b46465047a985346c36e14cd6b982ec6f04": {
+  "text": "At AAL3, reauthentication of the subscriber SHALL be repeated following any period of inactivity lasting 15 minutes or longer [C033].",
+  "latency_s": 1.0547929429994838,
+  "model_version": "gemini-3.1-flash-lite",
+  "finish_reason": "STOP",
+  "attempts": 1,
+  "error": null
+ },
+ "df984e1a7afb324da612017acf0065c9d60ddccddff15294f9c1b04694ff146a": {
+  "text": "The provided context does not answer this question.",
+  "latency_s": 1.163221163000344,
+  "model_version": "gemini-3.1-flash-lite",
+  "finish_reason": "STOP",
+  "attempts": 1,
+  "error": null
+ },
+ "d1fd53394470ee5cd5eed3c9d4041a04993abd96f06181cfd11fa243247abf4a": {
+  "text": "Yes, if out-of-band verification is to be made using a secure application, such as on a smartphone, the verifier MAY send a push notification to that device [C064]. The verifier then waits for the establishment of an authenticated protected channel and verifies the authenticator’s identifying key [C064].",
+  "latency_s": 1.464748747000158,
+  "model_version": "gemini-3.1-flash-lite",
+  "finish_reason": "STOP",
+  "attempts": 1,
+  "error": null
+ },
+ "663d4ca71180d3b5846848dfc7cf2d493f8c24f7d32836b6abaea50b1639cabc": {
+  "text": "The biometric system SHALL operate with an FMR of 1 in 1000 or better [C106]. This FMR SHALL be achieved under conditions of a conformant attack (i.e., zero-effort impostor attempt) as defined in ISO/IEC 30107-1 [C106].",
+  "latency_s": 1.2847769520003567,
+  "model_version": "gemini-3.1-flash-lite",
+  "finish_reason": "STOP",
+  "attempts": 1,
+  "error": null
+ },
+ "c84d40651cee4384bb8056a77907461259b36784e3f24d5e2616d6f6d9612569": {
+  "text": "The biometric system SHALL operate with an FMR of 1 in 1000 or better [C106]. This FMR SHALL be achieved under conditions of a conformant attack (i.e., zero-effort impostor attempt) as defined in ISO/IEC 30107-1 [C106].",
+  "latency_s": 1.555059261999304,
+  "model_version": "gemini-3.1-flash-lite",
+  "finish_reason": "STOP",
+  "attempts": 1,
+  "error": null
+ },
+ "2830e12314a28c89147cda41d25d2672ce8c67a01852d97ec2e62f5279032f7e": {
+  "text": "The provided context does not answer this question.",
+  "latency_s": 1.273427905999597,
+  "model_version": "gemini-3.1-flash-lite",
+  "finish_reason": "STOP",
+  "attempts": 1,
+  "error": null
+ },
+ "e034e3bd633d3c189072054c3358885ed7c54f9026fc15c2f2b31e1749a8d0db": {
+  "text": "Memorized secret verifiers SHALL NOT permit the subscriber to store a “hint” that is accessible to an unauthenticated claimant [C046].",
+  "latency_s": 1.2790960610000184,
+  "model_version": "gemini-3.1-flash-lite",
+  "finish_reason": "STOP",
+  "attempts": 1,
+  "error": null
+ },
+ "f37bf74e1210b067c309ffd5dfb50bd7fd92fb4ecd3eb950ba7e184e1765a350": {
+  "text": "The provided context does not answer this question.",
+  "latency_s": 1.9382173280000643,
+  "model_version": "gemini-3.1-flash-lite",
+  "finish_reason": "STOP",
+  "attempts": 1,
+  "error": null
+ },
+ "fe2e63d6e652d8c3f3efcad091d4498e3da3b8b15a2a7f95965afdf1df124e6a": {
+  "text": "Users SHOULD NOT be required to change their memorized secrets arbitrarily (e.g., periodically) unless there is a user request or evidence of authenticator compromise [C198].",
+  "latency_s": 1.489022900999771,
+  "model_version": "gemini-3.1-flash-lite",
+  "finish_reason": "STOP",
+  "attempts": 1,
+  "error": null
+ },
+ "37fb8470864da1e8f6ae39838e356354d535f0cca7f3b8ddb77a63625dbec7af": {
+  "text": "The provided context does not answer this question.",
+  "latency_s": 1.6530711759996848,
+  "model_version": "gemini-3.1-flash-lite",
+  "finish_reason": "STOP",
+  "attempts": 1,
+  "error": null
+ },
+ "0aec9dd34b487dded3aa749b57ec2031b6d1fa098472db8cf7d5294350653d3c": {
+  "text": "The provided context does not answer this question.",
+  "latency_s": 1.7472110879998581,
+  "model_version": "gemini-3.1-flash-lite",
+  "finish_reason": "STOP",
+  "attempts": 1,
+  "error": null
+ },
+ "3b70fee0d7d3487952cd945148fb1cb12e28e6248f61bc05fcaf5384e247992d": {
+  "text": "Yes, a 6-character memorized secret is acceptable if it is chosen randomly by the CSP or verifier [C043], [C046]. Such secrets SHALL be at least 6 characters in length and MAY be entirely numeric [C043]. Additionally, randomly generated PINs of 6 or more digits are considered adequate for memorized secrets [C252].",
+  "latency_s": 1.2469132189999073,
+  "model_version": "gemini-3.1-flash-lite",
+  "finish_reason": "STOP",
+  "attempts": 1,
+  "error": null
+ }
+}

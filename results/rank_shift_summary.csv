@@ -1,0 +1,17 @@
+qid,category,query,critical chunk: dense rank -> rerank rank,CE score,baseline top3,rerank top3,critical in baseline top3,critical in rerank top3,outcome
+Q01,keyword trap,Are password hints allowed?,C046: 6 -> 3,C046: -3.91,C198 C243 C244,C249 C244 C046,False,True,RE-RANK RESCUE
+Q02,keyword trap,How often should users be forced to change their passwords?,"C049: 19 -> —, C198: 6 -> 1",C198: -0.5,C246 C251 C247,C198 C197 C247,False,True,RE-RANK RESCUE
+Q03,keyword trap,What is the minimum password length?,"C043: 11 -> —, C044: 15 -> —",—,C246 C248 C245,C246 C096 C248,False,False,both miss (not in top 10)
+Q04,keyword trap,Can SMS text messages be used to deliver one-time codes?,"C061: 8 -> 2, C062: 11 -> —, C068: 31 -> —",C061: -9.78,C200 C138 C213,C167 C061 C193,False,True,RE-RANK RESCUE
+Q05,exception,How long is an out-of-band authentication secret valid?,C066: 4 -> 1,C066: 6.49,C065 C060 C061,C066 C058 C064,False,True,RE-RANK RESCUE
+Q06,exception,Is a 6-character memorized secret ever acceptable?,"C043: 1 -> 1, C046: 3 -> 2","C043: 5.06, C046: 3.84",C043 C198 C046,C043 C046 C252,True,True,both hit
+Q07,exception,How many failed fingerprint attempts are allowed before biometric authentication is disabled?,C107: 2 -> 1,C107: 7.19,C097 C107 C092,C107 C082 C097,True,True,both hit
+Q08,exception,Which authenticators are permitted at AAL3?,C028: 10 -> 2,C028: 7.58,C027 C030 C006,C018 C028 C027,False,True,RE-RANK RESCUE
+Q09,negation,Are hashed low-complexity passwords considered verifier-compromise resistant?,C117: 1 -> 1,C117: 8.5,C117 C116 C115,C117 C116 C115,True,True,both hit
+Q10,negation,Does unlocking my phone with a PIN count as an authentication factor?,C022: 1 -> 1,C022: 1.5,C022 C042 C092,C022 C023 C062,True,True,both hit
+Q11,negation,Is email an acceptable out-of-band authentication method?,"C060: 1 -> 2, C061: 2 -> 1","C060: 5.54, C061: 6.27",C060 C061 C058,C061 C060 C200,True,True,both hit
+Q12,negation,Can session cookies survive a browser restart?,C156: 2 -> 1,C156: 3.79,C153 C156 C148,C156 C153 C149,True,True,both hit
+Q13,role/level limit,Can a password alone satisfy AAL2?,"C018: 2 -> 8, C019: 70 -> —",C018: -2.18,C017 C018 C005,C022 C005 C017,True,False,RE-RANK LOSS
+Q14,role/level limit,After how many minutes of inactivity must an AAL3 session be reauthenticated?,C033: 2 -> 1,C033: 7.59,C024 C033 C014,C033 C024 C014,True,True,both hit
+Q15,buried detail,Can push notifications on a smartphone be used for out-of-band authentication?,C064: 5 -> 1,C064: 6.28,C200 C058 C201,C064 C201 C200,False,True,RE-RANK RESCUE
+Q16,buried detail,What false match rate must a biometric system achieve?,"C105: 9 -> 4, C106: 3 -> 2","C105: -6.85, C106: -1.28",C104 C103 C106,C103 C106 C107,True,True,both hit
