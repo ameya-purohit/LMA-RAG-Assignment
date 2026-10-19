@@ -1,135 +1,120 @@
-# RAG Retrieval: Baseline Dense Retrieval vs. Cross-Encoder Re-Ranking
+# Baseline Retrieval vs. Cross-Encoder Re-Ranking in a RAG Pipeline
 
-**Course:** LMA · **Author:** Ameya Purohit · **Date:** 19 October 2026\
-**Repository:** https://github.com/ameya-purohit/LMA-RAG-Assignment · **Code:** `rag_reranking.ipynb` · **Raw results:** `results/`
+Course: LMA\
+Author: Ameya Purohit\
+Date: 19 October 2026\
+Code and results: <https://github.com/ameya-purohit/LMA-RAG-Assignment>
 
----
+## 1. Setup
 
-## 1. Introduction and Experimental Setup
+For this assignment I built two retrieval pipelines over the same PDF and compared them. Both pipelines first use a bi-encoder to find the 10 chunks most similar to the question. The baseline then simply passes the top 3 of those 10 to the LLM. The second pipeline re-scores all 10 with a cross-encoder, re-sorts them, and passes its own top 3 to the LLM. Everything else, including the LLM, its settings and the prompt, is kept the same, so any difference in the answers comes only from which 3 chunks were chosen.
 
-This report compares two retrieval workflows for retrieval-augmented generation (RAG) over the same document:
+I used NIST Special Publication 800-63B, the US government guideline on digital authentication (2017 edition, updated in 2020). It is an 80-page technical standard, and I chose it because it is genuinely hard to search. Its rules depend on exact wording such as "shall", "shall not" and "should". Many rules are repeated with small changes for three assurance levels (AAL1, AAL2 and AAL3). It also uses formal terms where a normal user would use everyday words. For example, it says "memorized secret" instead of "password" and "PSTN" (the public telephone network) instead of "SMS". On top of that, the appendix on password strength talks about the same topics as the actual rules, so it acts as a natural distractor.
 
-- **Pipeline 1** is a dense bi-encoder baseline.
-- **Pipeline 2** re-ranks the same baseline candidates with a cross-encoder.
-
-The aim is to find out when the re-ranking step changes which passages reach the LLM, and whether that changes the answer.
-
-The document is **NIST SP 800-63B**, *Digital Identity Guidelines: Authentication and Lifecycle Management* (2017 edition, updated 2020). It is an 80-page normative standard and a hard retrieval target for three reasons:
-
-- Its rules depend on precise modal verbs (SHALL, SHALL NOT, SHOULD, MAY).
-- Requirements differ across three assurance levels (AAL1–AAL3).
-- It uses formal terms where users would use everyday ones: *memorized secret* for "password", *PSTN* for "SMS", *biometric* for "fingerprint".
-
-Informative sections, such as Appendix A on password strength, discuss the same topics as the normative rules and act as natural distractors.
-
-| Component | Configuration |
+| Part | What I used |
 | --- | --- |
-| Corpus | PDF pages 12–80. Running headers removed; section titles taken from the PDF outline. 254 chunks of ≤ 200 tokens, sentence-aligned, up to 40 tokens of overlap within a section, every chunk tagged with an ID, section and page. |
-| Bi-encoder | `all-MiniLM-L6-v2` (384-d). Normalised vectors in a FAISS exact inner-product index, so the score is cosine similarity. |
-| Cross-encoder | `cross-encoder/ms-marco-MiniLM-L-6-v2`, applied to the same Top 10 candidates. |
-| Selection | Baseline: dense ranks 1–3. Re-ranked: top 3 by cross-encoder score, sorted from highest to lowest. |
-| LLM | `gemini-3.1-flash-lite`, temperature 0. The prompt is identical except for the three context chunks. The model must answer only from the context and cite chunk IDs. |
-| Evaluation | 16 queries written from the document, covering keyword traps, exceptions, negations, level-specific limits and buried details. |
+| Document | NIST SP 800-63B, pages 12 to 80 (the cover, contents and errata pages were skipped) |
+| Chunks | 254 chunks of at most 200 tokens, split at sentence boundaries, with a small overlap between neighbouring chunks |
+| Bi-encoder | all-MiniLM-L6-v2, with a FAISS index using cosine similarity |
+| Cross-encoder | cross-encoder/ms-marco-MiniLM-L-6-v2 |
+| LLM | Gemini 3.1 Flash Lite, temperature 0, told to answer only from the given chunks |
+| Test questions | 16 questions written from the document |
 
-A chunk counts as **critical** for a query if it contains the sentence that answers it. This is checked automatically by matching a key phrase taken from that sentence. The notebook also asserts that both pipelines share an identical Top 10 list, that the baseline keeps the dense order, that all 10 candidates are re-scored and sorted correctly, and that both pipelines pass exactly three chunks to the LLM.
+Each chunk has a number (chunk 0 to chunk 253) and remembers which section and page of the PDF it came from, so every result below can be traced back to the original text. For each test question, I found the sentence in the document that actually answers it. I call the chunk containing that sentence the "key chunk". The question is then simply whether the key chunk reaches the LLM.
 
-## 2. Architecture Comparison: Bi-Encoder vs. Cross-Encoder
+## 2. Bi-Encoder vs. Cross-Encoder
 
-A **bi-encoder** encodes the query and each passage *independently* into one fixed-size vector, and relevance is the cosine similarity between the two vectors. Passage vectors depend only on the passage, so they are computed once, offline, and stored in a vector index. At query time the system embeds only the query and runs a fast nearest-neighbour search. The cost is that each passage is compressed into a single vector *before* the question is known. Fine-grained interactions between specific query words and passage words, such as negation, an exception clause, or a synonym, are captured only indirectly.
+A bi-encoder turns the question and each chunk into vectors separately, without either one ever seeing the other. Relevance is just the cosine similarity between the two vectors. Since the chunk vectors do not depend on the question, they can all be computed once in advance and stored in an index. At question time, only the question needs to be encoded, which makes search very fast. The downside is that each chunk is squeezed into a single vector before the question is known. Small but important details, such as a "not", an exception, or a synonym, can easily get lost.
 
-A **cross-encoder** concatenates the query and the passage (`[CLS] query [SEP] passage [SEP]`) and processes them *jointly*. Self-attention connects every query token to every passage token in every layer, and the model outputs one relevance score for the pair. This makes it more precise at judging whether a passage actually answers the question. However, the score depends on the pair, so nothing can be precomputed, and every candidate passage needs a full forward pass at query time.
+A cross-encoder reads the question and the chunk together as one input. Inside the transformer, every word of the question can attend to every word of the chunk, and the model outputs a single relevance score for that pair. This makes it much better at judging whether a chunk really answers the question. The price is that nothing can be prepared in advance, because the score depends on the question, and every candidate chunk needs its own full pass through the model.
 
-The difference was visible in the experiment. For Q05, the 10 candidates' cosine similarities lay in a narrow band (0.489–0.559), while their cross-encoder scores ranged from −0.81 to 6.49. The critical chunk stood clearly apart at 6.49; the next-best was 1.96.
+I could see this difference in my results. For the question about how long an out-of-band authentication code stays valid (Q05), the cosine similarities of the 10 candidates were all squeezed between 0.489 and 0.559. The cross-encoder scores for the same 10 chunks ranged from -0.81 to 6.49, and the key chunk was clearly ahead at 6.49, with the next best at only 1.96.
 
-## 3. Qualitative and Rank-Shift Analysis
+## 3. Rank Shifts and Answer Comparison
 
-### 3.1 Overall Outcome
+### 3.1 Overall Results
 
-| Measure | Result |
-| --- | --- |
-| Critical chunk in baseline Top 3 | 9 / 16 |
-| Critical chunk in re-ranked Top 3 | 14 / 16 |
-| Critical chunk anywhere in dense Top 10 (upper bound for re-ranking) | 15 / 16 |
-| Outcome per query | 8 correct in both · 6 rescued by re-ranking · 1 degraded · 1 missed by both |
-
-Re-ranking moved the critical chunk into the context for six queries and removed it for one. These are descriptive counts from a small, purposely difficult query set. They show the kinds of failure re-ranking can fix, not a general accuracy rate.
-
-### 3.2 Failure Cases Restored by Re-Ranking
-
-| Query | Category | Critical chunk | Rank shift | Answer 1 (baseline) | Answer 2 (re-ranked) |
-| --- | --- | --- | --- | --- | --- |
-| Q01 Are password hints allowed? | Keyword trap | C046, §5.1.1.2 | #6 → #3 | "Context does not answer" | Correct: verifiers SHALL NOT permit storing a hint |
-| Q02 How often should users be forced to change their passwords? | Keyword trap | C198, §10.2.1 | #6 → #1 | "Context does not answer" | Correct: not periodically; only on user request or evidence of compromise |
-| Q05 How long is an out-of-band authentication secret valid? | Exception / specific limit | C066, §5.1.3.2 | #4 → #1 | "Context does not answer" | Correct: invalid if not completed within 10 minutes |
-| Q08 Which authenticators are permitted at AAL3? | Level-specific rule | C028, §4.3.1 | #10 → #2 | General AAL3 requirements only; omits the list of permitted authenticators | Lists the permitted combinations |
-| Q15 Can push notifications be used for out-of-band authentication? | Buried detail | C064, §5.1.3.2 | #5 → #1 | "Context does not answer" | Correct: verifier MAY send a push notification |
-| Q04 Can SMS be used to deliver one-time codes? | Keyword trap | C061, §5.1.3.1 | #8 → #2 | "Context does not answer" | Partially correct: omits that SMS is RESTRICTED |
-
-**Keyword trap (Q01, Q02).** The user asks about "passwords", but the normative rules say "memorized secret". The baseline's top three for Q01 were:
-
-- C198 (usability guidance, §10.2.1)
-- C243 (Appendix A heading)
-- C244 (Appendix A.1 introduction)
-
-All three use the word "password" heavily, and none contains the rule. The rule chunk C046 ("Memorized secret verifiers SHALL NOT permit the subscriber to store a 'hint'…") was ranked 6th. The cross-encoder reads the query and passage together, so it matched the question's intent to the specific prohibition and promoted C046 to 3rd. Answer 1 said the context did not answer the question; Answer 2 stated the rule and cited C046. Q02 follows the same pattern: Appendix A chunks on password length and complexity filled the baseline Top 3, while the chunk stating when a change may be forced was promoted from 6th to 1st.
-
-**Exception / specific limit (Q05).** Eight of the 10 candidates come from the out-of-band authentication sections, and their cosine similarities are nearly identical. The chunk with the 10-minute validity limit was 4th, just outside the context. The cross-encoder ranked it 1st with a wide score margin. Without it, the baseline answer correctly declined to answer, but the user received no information.
-
-**Level-specific rule (Q08).** The list of permitted AAL3 authenticators (§4.3.1) was 10th, behind general chunks about all three assurance levels (including the AAL2 permitted-authenticator list). The baseline answer was not wrong, but it described hardware and FIPS 140 requirements instead of answering the question. This is an omission of the essential clause. Re-ranking promoted §4.3.1 to 2nd, and Answer 2 listed the permitted combinations. The list continues into the next chunk (C029), so Answer 2 gives five of the six combinations, which is a chunk-boundary effect.
-
-**Effect on the answers.** In none of the six cases did the baseline LLM hallucinate a rule. It either stated that the context did not answer the question (five cases) or gave true but incomplete information (Q08). With a strict "answer only from the context" prompt, missing the critical chunk shows up as **omission**, not invention. Re-ranking turned these into correct, cited answers in five of the six cases. The exception is Q04, discussed in Section 3.3.
-
-### 3.3 Negative and Unresolved Cases
-
-**Re-ranking degraded the ranking (Q13: "Can a password alone satisfy AAL2?").** The chunk stating the AAL2 rule (C018: authentication SHALL use a multi-factor authenticator or two single-factor authenticators) fell from 2nd to 8th. The cross-encoder preferred C022, which mentions PINs and AAL2 but is about device unlocking. The answer was unaffected, because the two-factor requirement is repeated in C005 and C017, which stayed in the Top 3. A similar level confusion occurred in Q08: the cross-encoder's top candidate was the *AAL2* permitted-authenticator chunk. Cross-encoders are more precise but not infallible, especially when chunks differ only in a level number.
-
-**First-stage recall limits re-ranking (Q03, Q04).**
-
-- **Q03 "What is the minimum password length?"** The rule ("at least 8 characters in length if chosen by the subscriber", C043) was ranked 11th by the bi-encoder, behind Appendix A's discussion of password length. It never entered the Top 10, so both pipelines answered that the context does not contain the answer.
-- **Q04 (SMS).** Re-ranking surfaced a relevant chunk, but the essential restriction ("Use of the PSTN for out-of-band verification is RESTRICTED", C068) was ranked 31st. Answer 2 therefore described SMS as usable without its RESTRICTED status. That is an omitted clause which re-ranking could not fix.
-
-A re-ranker can only reorder what the first stage retrieves. Its benefit is bounded by the bi-encoder's recall at k = 10.
-
-**Queries where both pipelines succeeded.** The remaining eight queries succeeded in both pipelines. They include all four negation queries (Q09–Q12), whose "SHALL NOT" chunks the bi-encoder already ranked 1st or 2nd. On this document, the bi-encoder's main weakness was vocabulary mismatch and near-duplicate sections, not negation.
-
-## 4. Latency Profiling
-
-Timings are wall-clock (`time.perf_counter`) on a CPU-only laptop (12 logical cores), with models loaded and warmed up. Each of the 16 queries was run 20 times, giving 320 measurements per retrieval stage. Model loading and the one-off corpus embedding (6.4 s) are excluded. LLM latency is one Gemini API call per answer.
-
-| Stage | Median (ms) | p95 (ms) |
+| | Baseline | Re-ranking |
 | --- | --- | --- |
-| Pipeline 1 retrieval: query embedding + FAISS Top 10 + Top 3 | 8.2 | 11.2 |
-| Re-ranking step: cross-encoder on 10 pairs + sort | 183.3 | 250.5 |
-| Pipeline 2 retrieval: dense retrieval + re-ranking | 191.6 | 261.6 |
-| LLM generation, Answer 1 (n = 16) | 1648.7 | 2670.0 |
-| LLM generation, Answer 2 (n = 16) | 1433.8 | 1948.8 |
+| Key chunk reached the LLM (in the top 3) | 9 out of 16 | 14 out of 16 |
 
-Re-ranking makes retrieval about **23 times slower** (8.2 ms → 191.6 ms), because the cross-encoder runs ten full transformer passes while the baseline encodes one query. In absolute terms it adds about 0.18 s to a request whose LLM call takes 1.4–1.7 s. The difference between the two LLM medians (about 0.2 s, caused by API variance) is about as large as the entire re-ranking cost. In this setup, generation dominates end-to-end latency, and re-ranking is affordable.
+Out of the 16 questions:
 
-## 5. Scaling: Why Not Apply the Cross-Encoder to the Whole Collection?
+- 8 worked in both pipelines.
+- 6 failed in the baseline but were fixed by re-ranking.
+- 1 got worse with re-ranking.
+- 1 failed in both.
 
-| Setting | Per-query cost |
+For 15 of the 16 questions, the key chunk was somewhere in the bi-encoder's top 10, which is the best re-ranking could possibly do. Since I only used 16 questions, and I picked them to be difficult, these counts show the kinds of mistakes re-ranking can fix rather than a general accuracy figure.
+
+### 3.2 Failure Cases Fixed by Re-Ranking
+
+| Question | Type | Key chunk (section) | Rank before | Rank after | Baseline answer | Re-ranked answer |
+| --- | --- | --- | --- | --- | --- | --- |
+| Q01: Are password hints allowed? | Keyword trap | Chunk 46 (Section 5.1.1.2) | 6 | 3 | Said the context does not answer | Correct: a hint that can be seen before logging in is not allowed |
+| Q02: How often should users be forced to change their passwords? | Keyword trap | Chunk 198 (Section 10.2.1) | 6 | 1 | Said the context does not answer | Correct: not on a schedule, only if the user asks or there is evidence of compromise |
+| Q05: How long is an out-of-band authentication secret valid? | Exception / specific limit | Chunk 66 (Section 5.1.3.2) | 4 | 1 | Said the context does not answer | Correct: 10 minutes |
+| Q08: Which authenticators are permitted at AAL3? | Level-specific rule | Chunk 28 (Section 4.3.1) | 10 | 2 | Gave general AAL3 rules but left out the actual list | Gave the list of allowed combinations |
+| Q15: Can push notifications be used for out-of-band authentication? | Buried detail | Chunk 64 (Section 5.1.3.2) | 5 | 1 | Said the context does not answer | Correct: yes, the verifier may send a push notification |
+| Q04: Can SMS be used to deliver one-time codes? | Keyword trap | Chunk 61 (Section 5.1.3.1) | 8 | 2 | Said the context does not answer | Only partly correct (see Section 3.3) |
+
+**Keyword trap (Q01 and Q02).** The question says "password", but the rule in the document says "memorized secret". For Q01, the baseline's top 3 were chunk 198 (usability advice), chunk 243 (the start of the appendix on password strength) and chunk 244 (the appendix introduction). All three use the word "password" a lot, but none of them contains the rule. The chunk with the actual rule, chunk 46, says that verifiers "SHALL NOT permit the subscriber to store a hint that is accessible to an unauthenticated claimant". The bi-encoder ranked it only 6th. Because the cross-encoder reads the question and chunk together, it recognised that chunk 46 answers the question and moved it up to 3rd. The baseline answer said the context did not contain the answer, while the re-ranked answer stated the rule correctly. Q02 followed the same pattern. The baseline's top 3 were all appendix chunks about password length and complexity, while the chunk saying when a password change can be forced moved from 6th to 1st.
+
+**Exception / specific limit (Q05).** Eight of the 10 candidates came from the out-of-band authentication sections, and their cosine scores were almost the same. The chunk with the 10-minute limit came 4th, just outside the top 3. The cross-encoder put it 1st by a wide margin. Without it, the baseline answer correctly said it could not find the answer, but that still left the user with no information.
+
+**Level-specific rule (Q08).** The list of authenticators allowed at AAL3 (Section 4.3.1) was ranked 10th, behind general chunks about all three levels, including the similar list for AAL2. The baseline answer was not wrong, but it talked about hardware and FIPS 140 requirements and never gave the list that was asked for, so it missed the essential part. Re-ranking moved Section 4.3.1 up to 2nd, and the answer then listed the allowed combinations. It gave five of the six, because the sixth was cut off into the next chunk, which is a side effect of where the chunk boundary fell.
+
+**Did the baseline hallucinate?** No. In all six cases the baseline LLM either said the context did not contain the answer (five cases) or gave correct but incomplete information (Q08). Because the prompt told the model to use only the given chunks, a missing key chunk led to a missing answer, not a made-up rule. Re-ranking turned these into correct answers that cite their source in five of the six cases. Q04 is the exception, and I discuss it below.
+
+### 3.3 Cases Where Re-Ranking Did Not Help
+
+**Re-ranking made one ranking worse (Q13: "Can a password alone satisfy AAL2?").** The chunk with the AAL2 rule (chunk 18), which says authentication must use a multi-factor authenticator or two single-factor authenticators, dropped from 2nd to 8th. The cross-encoder preferred chunk 22, which covers other AAL2 requirements, including the rule that unlocking a phone with a PIN does not count as a factor, but does not say that two factors are needed. Luckily, the answer was still correct, because the same two-factor requirement also appears in chunks 5 and 17, which stayed in the top 3. I saw a similar mix-up in Q08, where the cross-encoder's first choice was the AAL2 list instead of the AAL3 one. So the cross-encoder is more accurate, but it can still confuse chunks that differ only in the level number.
+
+**Re-ranking cannot fix what the first stage misses (Q03 and Q04).**
+
+- For Q03 ("What is the minimum password length?"), the rule says passwords chosen by the user must be "at least 8 characters" long. That rule is in chunk 43, but the bi-encoder ranked it 11th, behind the appendix chunks about password length. Since only the top 10 are re-ranked, the cross-encoder never saw it, and both pipelines said they could not answer.
+- For Q04 (SMS), re-ranking did bring a relevant chunk into the top 3. However, the most important rule, that using the phone network for this "is RESTRICTED", is in chunk 68, which the bi-encoder ranked 31st. As a result, the re-ranked answer said SMS can be used and left out the restriction.
+
+A re-ranker can only re-order what it is given, so it can never be better than the first stage's top 10.
+
+**Questions that worked in both pipelines.** The other eight questions worked in both pipelines. These include all four of my negation questions (Q09 to Q12), where the bi-encoder already ranked the "shall not" chunk 1st or 2nd. So for this document, the bi-encoder's real weakness was different wording between the question and the document, and near-duplicate sections, rather than negation.
+
+## 4. Latency
+
+I timed each stage on my laptop's CPU (12 logical cores) after the models were loaded and warmed up. Each of the 16 questions was run 20 times, giving 320 measurements per stage. Loading the models and embedding the document (6.4 seconds, done only once) are not included. The LLM time is one Gemini API call per answer.
+
+| Stage | Median time | 95th percentile |
+| --- | --- | --- |
+| Baseline retrieval (encode question, search top 10, keep top 3) | 8.2 ms | 11.2 ms |
+| Re-ranking step only (cross-encoder on 10 chunks, then sort) | 183.3 ms | 250.5 ms |
+| Full re-ranking retrieval (search plus re-ranking) | 191.6 ms | 261.6 ms |
+| LLM answer, baseline pipeline (16 calls) | 1648.7 ms | 2670.0 ms |
+| LLM answer, re-ranking pipeline (16 calls) | 1433.8 ms | 1948.8 ms |
+
+Re-ranking makes retrieval about 23 times slower (8.2 ms against 191.6 ms), because the cross-encoder needs ten full model passes, while the baseline only encodes the question once. In real terms, though, it adds only about 0.18 seconds to a request where the LLM call alone takes about 1.4 to 1.7 seconds. The gap between the two LLM medians, about 0.2 seconds, is caused just by API variation and is roughly as large as the whole re-ranking cost. So in this setup, the LLM dominates the total time, and re-ranking is cheap enough to be worth it.
+
+## 5. Why Not Use the Cross-Encoder on Everything?
+
+| Setting | Time per question |
 | --- | --- |
-| Cross-encoder on 10 candidates (measured) | 0.18 s |
-| Cross-encoder on all 254 chunks (measured) | 4.78 s (18.8 ms per pair) |
-| Cross-encoder on 1,000,000 chunks (linear extrapolation) | ≈ 18,800 s ≈ 5.2 hours |
+| Cross-encoder on the 10 candidates (measured) | 0.18 seconds |
+| Cross-encoder on all 254 chunks (measured) | 4.78 seconds (about 18.8 ms per chunk) |
+| Cross-encoder on 1,000,000 chunks (estimated by scaling up) | about 18,800 seconds, which is about 5.2 hours |
 
-A cross-encoder scores a (query, passage) pair, so its cost is one transformer forward pass per passage per query. Nothing can be computed ahead of time, because the score depends on the query, and the cost grows linearly with the collection size. Even this single 254-chunk document takes 4.8 s per query; a realistic collection of a million passages would take hours per question.
+The cross-encoder scores a question and a chunk together, so every chunk needs a full model pass for every new question. None of this work can be done ahead of time, because the score depends on the question. The cost therefore grows directly with the number of chunks. Even for my one 254-chunk document it took almost 5 seconds per question, and a real collection with a million chunks would take hours for a single question.
 
-A bi-encoder moves almost all of its cost offline. Passage embeddings are computed once (and are reused by every query), and at query time only the query is encoded. The search is a vector similarity lookup. Query encoding plus exact search over 254 vectors took 8.2 ms here, and approximate nearest-neighbour indexes such as HNSW or IVF keep it fast and sub-linear for millions of vectors (a general property, not measured in this experiment).
+The bi-encoder does most of its work in advance. Every chunk is embedded once and reused for every question, so at question time it only encodes the question and looks up the nearest vectors. Here that took 8.2 ms in total. For very large collections, approximate search indexes such as HNSW keep this lookup fast, although I did not measure that myself.
 
-The two-stage design combines the strengths of both: the cheap bi-encoder narrows the collection to a few candidates, and the expensive cross-encoder spends its compute only where precision matters. The cost of this design is that the final result can be no better than the first stage's recall, as Q03 and Q04 show.
+This is why the two are combined. The fast bi-encoder narrows thousands or millions of chunks down to a handful, and the slow but accurate cross-encoder is only used on those few. The trade-off is that the final result can never be better than what the first stage finds, as Q03 and Q04 showed.
 
 ## 6. Conclusion and Limitations
 
-On NIST SP 800-63B, cross-encoder re-ranking raised the number of queries whose critical passage reached the LLM from 9 to 14 out of 16. In five of the six rescued cases, a non-answer or incomplete answer became a correct, cited answer; in the sixth (SMS), the answer improved but remained incomplete. The failures it fixed were mainly vocabulary mismatches between user language and the standard's terminology, and specific limits hidden among near-identical neighbouring chunks. Re-ranking also demoted a relevant chunk once (without harming the answer), and it could not help when the critical passage was outside the dense Top 10. The extra cost was about 0.18 s per query, small next to LLM generation, while cross-encoding the whole collection would not scale.
+On NIST SP 800-63B, re-ranking increased the number of questions where the key chunk reached the LLM from 9 to 14 out of 16. In five of the six fixed cases, a missing or incomplete answer became a correct one, and in the sixth (SMS) the answer improved but still left out an important restriction. The problems it fixed were mostly cases where the question used different words from the document, or where the specific rule was hidden among very similar chunks. Re-ranking also pushed one useful chunk down once, though without hurting the answer, and it could not help when the key chunk was not in the top 10 at all. It added only about 0.18 seconds per question, which is small compared to the LLM, whereas running the cross-encoder over the whole collection would not scale.
 
-**Limitations.**
+Limitations:
 
-- The evaluation uses 16 queries on a single document. I wrote them after reading the document and refined them while exploring retrieval, so they are targeted stress tests, not a random sample. The counts are descriptive and not statistically significant.
-- Relevance was judged by key-phrase containment, and answers were checked manually.
-- Both encoders are small MiniLM models, and chunk boundaries split at least one list (Q08).
-- Gemini answers can vary between uncached runs; answers are cached in `results/llm_cache.json`, so re-running the notebook reproduces this run.
-- The standard's 2017/2020 edition has since been superseded by SP 800-63B-4.
-
----
+- I only tested 16 questions on one document. I wrote them myself after reading the document, so they are targeted stress tests rather than a random sample, and the numbers are not statistically significant.
+- I decided whether a chunk was relevant by checking whether it contained a key phrase from the answering sentence, and I read all the answers myself.
+- Both encoders are small models, and in at least one case (Q08) a chunk boundary split a list in two.
+- Gemini's answers can change slightly between runs. I saved the answers from this run so that the notebook reproduces them exactly.
+- This edition of the standard has since been replaced by a newer version (SP 800-63B-4).
