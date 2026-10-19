@@ -1,7 +1,7 @@
 # RAG Retrieval: Baseline Dense Retrieval vs. Cross-Encoder Re-Ranking
 
-**Course:** LMA · **Author:** Ameya Purohit · **Date:** 19 October 2026
-**Code:** [`rag_reranking.ipynb`](../rag_reranking.ipynb) · **Raw results:** [`results/`](../results/)
+**Course:** LMA · **Author:** Ameya Purohit · **Date:** 19 October 2026\
+**Repository:** https://github.com/ameya-purohit/LMA-RAG-Assignment · **Code:** `rag_reranking.ipynb` · **Raw results:** `results/`
 
 ---
 
