@@ -24,7 +24,7 @@ Informative sections, such as Appendix A on password strength, discuss the same 
 
 | Component | Configuration |
 | --- | --- |
-| Corpus | PDF pages 12–80. Running headers removed; section titles taken from the PDF outline. 254 chunks of ≤ 200 tokens, sentence-aligned, 40-token overlap within a section, every chunk tagged with an ID, section and page. |
+| Corpus | PDF pages 12–80. Running headers removed; section titles taken from the PDF outline. 254 chunks of ≤ 200 tokens, sentence-aligned, up to 40 tokens of overlap within a section, every chunk tagged with an ID, section and page. |
 | Bi-encoder | `all-MiniLM-L6-v2` (384-d). Normalised vectors in a FAISS exact inner-product index, so the score is cosine similarity. |
 | Cross-encoder | `cross-encoder/ms-marco-MiniLM-L-6-v2`, applied to the same Top 10 candidates. |
 | Selection | Baseline: dense ranks 1–3. Re-ranked: top 3 by cross-encoder score, sorted from highest to lowest. |
@@ -71,13 +71,13 @@ Re-ranking moved the critical chunk into the context for six queries and removed
 - C243 (Appendix A heading)
 - C244 (Appendix A.1 introduction)
 
-All three use the word "password" heavily, and none contains the rule. The rule chunk C046 ("Memorized secret verifiers SHALL NOT permit the subscriber to store a 'hint'…") was ranked 6th. The cross-encoder reads the query and passage together, so it matched the question's intent to the specific prohibition and promoted C046 to 3rd. Answer 1 said the context did not answer the question; Answer 2 stated the rule and cited C046. Q02 follows the same pattern: Appendix A chunks on password length filled the baseline Top 3, while the chunk stating when a change may be forced was promoted from 6th to 1st.
+All three use the word "password" heavily, and none contains the rule. The rule chunk C046 ("Memorized secret verifiers SHALL NOT permit the subscriber to store a 'hint'…") was ranked 6th. The cross-encoder reads the query and passage together, so it matched the question's intent to the specific prohibition and promoted C046 to 3rd. Answer 1 said the context did not answer the question; Answer 2 stated the rule and cited C046. Q02 follows the same pattern: Appendix A chunks on password length and complexity filled the baseline Top 3, while the chunk stating when a change may be forced was promoted from 6th to 1st.
 
-**Exception / specific limit (Q05).** All 10 candidates come from the out-of-band authentication sections, so the bi-encoder sees them as almost equally relevant. The chunk with the 10-minute validity limit was 4th, just outside the context. The cross-encoder ranked it 1st with a wide score margin. Without it, the baseline answer correctly declined to answer, but the user received no information.
+**Exception / specific limit (Q05).** Eight of the 10 candidates come from the out-of-band authentication sections, and their cosine similarities are nearly identical. The chunk with the 10-minute validity limit was 4th, just outside the context. The cross-encoder ranked it 1st with a wide score margin. Without it, the baseline answer correctly declined to answer, but the user received no information.
 
-**Level-specific rule (Q08).** The list of permitted AAL3 authenticators (§4.3.1) was 10th, behind general AAL3 chunks. The baseline answer was not wrong, but it described hardware and FIPS 140 requirements instead of answering the question. This is an omission of the essential clause. Re-ranking promoted §4.3.1 to 2nd, and Answer 2 listed the permitted combinations. The list continues into the next chunk (C029), so Answer 2 gives five of the six combinations, which is a chunk-boundary effect.
+**Level-specific rule (Q08).** The list of permitted AAL3 authenticators (§4.3.1) was 10th, behind general chunks about all three assurance levels (including the AAL2 permitted-authenticator list). The baseline answer was not wrong, but it described hardware and FIPS 140 requirements instead of answering the question. This is an omission of the essential clause. Re-ranking promoted §4.3.1 to 2nd, and Answer 2 listed the permitted combinations. The list continues into the next chunk (C029), so Answer 2 gives five of the six combinations, which is a chunk-boundary effect.
 
-**Effect on the answers.** In none of the six cases did the baseline LLM hallucinate a rule. It either stated that the context did not answer the question (five cases) or gave true but incomplete information (Q08). With a strict "answer only from the context" prompt, missing the critical chunk shows up as **omission**, not invention. Re-ranking turned these non-answers into correct, cited answers.
+**Effect on the answers.** In none of the six cases did the baseline LLM hallucinate a rule. It either stated that the context did not answer the question (five cases) or gave true but incomplete information (Q08). With a strict "answer only from the context" prompt, missing the critical chunk shows up as **omission**, not invention. Re-ranking turned these into correct, cited answers in five of the six cases. The exception is Q04, discussed in Section 3.3.
 
 ### 3.3 Negative and Unresolved Cases
 
@@ -116,7 +116,7 @@ Re-ranking makes retrieval about **23 times slower** (8.2 ms → 191.6 ms), beca
 
 A cross-encoder scores a (query, passage) pair, so its cost is one transformer forward pass per passage per query. Nothing can be computed ahead of time, because the score depends on the query, and the cost grows linearly with the collection size. Even this single 254-chunk document takes 4.8 s per query; a realistic collection of a million passages would take hours per question.
 
-A bi-encoder moves almost all of its cost offline. Passage embeddings are computed once (and are reused by every query), and at query time only the query is encoded. The search is a vector similarity lookup, which approximate nearest-neighbour indexes such as HNSW or IVF answer in milliseconds, in sub-linear time even for millions of vectors.
+A bi-encoder moves almost all of its cost offline. Passage embeddings are computed once (and are reused by every query), and at query time only the query is encoded. The search is a vector similarity lookup. Query encoding plus exact search over 254 vectors took 8.2 ms here, and approximate nearest-neighbour indexes such as HNSW or IVF keep it fast and sub-linear for millions of vectors (a general property, not measured in this experiment).
 
 The two-stage design combines the strengths of both: the cheap bi-encoder narrows the collection to a few candidates, and the expensive cross-encoder spends its compute only where precision matters. The cost of this design is that the final result can be no better than the first stage's recall, as Q03 and Q04 show.
 
@@ -133,5 +133,3 @@ On NIST SP 800-63B, cross-encoder re-ranking raised the number of queries whose 
 - The standard's 2017/2020 edition has since been superseded by SP 800-63B-4.
 
 ---
-
-*Use of AI tools: AI assistance was used in developing the code and drafting this report, as permitted by the course instructions. All results come from the committed notebook run.*

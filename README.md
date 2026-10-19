@@ -28,7 +28,6 @@ results/              # outputs written by the notebook (the run discussed in th
   llm_cache.json          # cached Gemini responses (lets the notebook re-run without new API calls)
   latency.csv, scaling.csv
 report/report.md      # submission report
-report/report_notes.md  # factual notes and observations supporting the report
 requirements.txt
 ```
 
